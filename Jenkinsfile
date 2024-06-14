@@ -13,13 +13,13 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                checkout([$class: 'GitSCM', 
-                    branches: [[name: '*/master']], 
-                    userRemoteConfigs: [[url: 'https://github.com/cholewa-p/react-tetris']]])
-            }
-        }
+        // stage('Checkout') {
+        //     steps {
+        //         checkout([$class: 'GitSCM', 
+        //             branches: [[name: '*/master']], 
+        //             userRemoteConfigs: [[url: 'https://github.com/cholewa-p/react-tetris']]])
+        //     }
+        // }
         stage('Build') {
             steps {
                 echo "$DOCKER_TAG"
