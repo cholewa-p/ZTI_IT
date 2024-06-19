@@ -13,22 +13,32 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                checkout([$class: 'GitSCM', 
-                    branches: [[name: '*/master']], 
-                    userRemoteConfigs: [[url: 'https://github.com/cholewa-p/react-tetris']]])
-            }
-        }
+        // stage('Checkout') {
+        //     steps {
+        //         checkout([$class: 'GitSCM', 
+        //             branches: [[name: '*/master']], 
+        //             userRemoteConfigs: [[url: 'https://github.com/cholewa-p/react-tetris']]])
+        //     }
+        // }
         stage('Build') {
             steps {
                 echo "$DOCKER_TAG"
                 //docker inspect <name> | jq '.[] | .RepoTags[0]' | cut -d ":" -f 2
+<<<<<<< HEAD
                 withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                 sh """
                 docker login -u $USERNAME -p $PASSWORD
                 docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
                 """
+=======
+                withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    withCredentials([usernamePassword(credentialsId: 'github_credentials', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
+                        sh """
+                            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+                            docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} --build-arg GH_USER=${GIT_USERNAME} --build-arg GH_TOKEN=${GIT_PASSWORD} --no-cache=true --pull .
+                        """
+                    }
+>>>>>>> 441b0144f7d1bcf97416533055f3f4968ac21d97
                 }
             }
             post {
@@ -45,14 +55,20 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     sh"""
                     docker login -u $USERNAME -p $PASSWORD
+<<<<<<< HEAD
                     """
                     // docker push ${DOCKER_IMAGE}:${DOCKER_TAG}
                     
+=======
+                    docker push ${DOCKER_IMAGE}:${DOCKER_TAG}
+                    """
+>>>>>>> 441b0144f7d1bcf97416533055f3f4968ac21d97
                 }
             }
         }
         stage('Deploy'){
             steps{
+<<<<<<< HEAD
                 withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     sh"""
                     #!/bin/bash
@@ -64,6 +80,21 @@ pipeline {
                     docker ps
                 """
                 }
+=======
+                script{
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh"""
+                    #!/bin/bash
+                        docker login -u $USERNAME -p $PASSWORD                   
+                        docker ps -aq | xargs docker stop | xargs docker rm
+                        docker container prune --force
+                        docker image prune --force --all
+                        docker run -d -p 8080:8080 --name tetris_app ${DOCKER_IMAGE}:${DOCKER_TAG}
+                        docker ps
+                    """
+                }
+            }
+>>>>>>> 441b0144f7d1bcf97416533055f3f4968ac21d97
             }
             post {
                 success {
@@ -73,6 +104,7 @@ pipeline {
                     echo 'Deployment unsuccessful'
                 }
             }
+<<<<<<< HEAD
         }
         // stage('Publish'){
         //     script{
@@ -98,5 +130,9 @@ pipeline {
         //             }
         //         }
         // }
+=======
+        
+    }
+>>>>>>> 441b0144f7d1bcf97416533055f3f4968ac21d97
     }
 }
