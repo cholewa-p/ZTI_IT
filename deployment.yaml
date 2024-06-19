@@ -1,0 +1,23 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tetris-web-app
+  labels:
+    app: tetris-web-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: tetris-web-app
+  template:
+    metadata:
+      labels:
+        app: tetris-web-app
+    spec:
+      containers:
+      - name: tetris-web-app
+        image: cholewap/tetris:1.5
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080

@@ -85,29 +85,6 @@ pipeline {
                 }
             }
         }
-        // stage('Publish'){
-        //     script{
-        //     steps{
-        //         withCredentials([usernamePassword(credentialsId: 'DOCKERHUB', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-        //         sh 'docker login -u=${USER} -p=${PASS}'
-        //         }
-        //         sh 'docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} cholewap/${DOCKER_IMAGE}:${DOCKER_TAG}'
-        //         sh 'docker push cholewap/${DOCKER_IMAGE}:${DOCKER_TAG}'
-        //         sh 'docker save ${DOCKER_IMAGE}:${DOCKER_TAG} > ${ARTIFACT_NAME}.tar'
-        //         archiveArtifacts artifacts: "${ARTIFACT_NAME}.tar", fingerprint: true
-        //     }
-        //     }
-        //         post {
-        //             success {
-        //             echo 'Image published'
-        //             }
-        //         failure {
-        //             echo 'Publishing failed'
-        //             emailext body: 'Check console output at $BUILD_URL to view the results. \n\n ${CHANGES} \n\n -------------------------------------------------- \n${BUILD_LOG, maxLines=100, escapeHtml=false}', 
-        //             to: "${EMAIL_TO}", 
-        //             subject: 'Publishing failed in Jenkins: $PROJECT_NAME - #$BUILD_NUMBER'
-        //             }
-        //         }
-        // }
+    }
     }
 }
