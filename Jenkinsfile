@@ -60,16 +60,16 @@ pipeline {
                     #!/bin/bash
                     docker login -u $USERNAME -p $PASSWORD
                     """
-                try {
+                // try {
                     sh """                    
                     docker container prune --force
                     docker image prune --force --all
-                    docker ps -aq | xargs docker stop | xargs docker rm
+                    #docker ps -aq | xargs docker stop | xargs docker rm
                     """
-                }
-                catch (Exception e) {
-                    echo "Error: ${e}"
-                }
+                // }
+                // catch (Exception e) {
+                //     echo "Error: ${e}"
+                // }
                 sh """
                 docker run -d -p 8080:8080 --name tetris_app ${DOCKER_IMAGE}:${DOCKER_TAG}
                 docker ps
