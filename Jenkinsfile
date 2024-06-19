@@ -58,23 +58,15 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     sh"""
                     #!/bin/bash
-                    docker login -u $USERNAME -p $PASSWORD
+                        docker login -u $USERNAME -p $PASSWORD                   
+                        docker ps -aq | xargs docker stop | xargs docker rm
+                        docker container prune --force
+                        docker image prune --force --all
+                        docker run -d -p 8080:8080 --name tetris_app ${DOCKER_IMAGE}:${DOCKER_TAG}
+                        docker ps
                     """
-                // try {
-                    sh """                    
-                    docker ps -aq | xargs docker stop | xargs docker rm
-                    docker container prune --force
-                    docker image prune --force --all
-                    """
-                // }
-                // catch (Exception e) {
-                //     echo "Error: ${e}"
-                // }
-                sh """
-                docker run -d -p 8080:8080 --name tetris_app ${DOCKER_IMAGE}:${DOCKER_TAG}
-                docker ps
-                """
                 }
+            }
             }
             post {
                 success {
@@ -84,7 +76,7 @@ pipeline {
                     echo 'Deployment unsuccessful'
                 }
             }
-        }
+        
     }
     }
 }
